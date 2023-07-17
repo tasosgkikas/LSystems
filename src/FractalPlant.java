@@ -1,10 +1,10 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.geom.Line2D;
 
 public class FractalPlant extends JFrame {
-
     public static void main(String[] args) {
         EventQueue.invokeLater(FractalPlant::new);
     }
@@ -12,68 +12,77 @@ public class FractalPlant extends JFrame {
     FractalPlant() {
         super("Fractal Plant");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        add(createPanel());
-//        pack();
         setSize(2*screenSize.width/3, 2*screenSize.height/3);
+
+        buildFrame();
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
-    private static JPanel createPanel() {
-        var mainPanel = new JPanel(new BorderLayout()); // το βασικό Panel
-        var ctrlPanel = new JPanel(new BorderLayout(10, 0)); // panel με όλα τα controls
-        var paramPanel = new JPanel(new BorderLayout()); // panel με τα controls των παραμέτρων
-        var paramNamesPanel = new JPanel(new BorderLayout()); // panel με τα ονόματα των παραμέτρων
-        var paramSlidersPanel = new JPanel(new BorderLayout()); // panel με τα sliders των παραμέτρων
-        var paramValuesPanel = new JPanel(new BorderLayout()); // panel με τις τιμές των παραμέτρων
+    private void buildFrame() {
+        class Parameter { // controls παραμέτρων
+            final JLabel nameLabel;
+            JSlider slider;
+            JLabel valueLabel;
 
-        var numIters = new JSlider(3, 10, 8);  // Slider για iterations
-        var numItersLabel = new JLabel(String.valueOf(numIters.getValue()));
-
-        var step = new JSlider(1, 10, 2);      // Slider για pixels / βήμα
-        var stepLabel = new JLabel(String.valueOf(step.getValue()));
-
-        paramNamesPanel.add(new JLabel("Iterations"), BorderLayout.PAGE_START);
-        paramNamesPanel.add(new JLabel("Forward step (pixels)"), BorderLayout.PAGE_END);
-
-        paramSlidersPanel.add(numIters, BorderLayout.PAGE_START);
-        paramSlidersPanel.add(step, BorderLayout.PAGE_END);
-
-        paramValuesPanel.add(numItersLabel, BorderLayout.PAGE_START);
-        paramValuesPanel.add(stepLabel, BorderLayout.PAGE_END);
-
-        paramPanel.add(paramNamesPanel, BorderLayout.LINE_START);
-        paramPanel.add(paramSlidersPanel, BorderLayout.CENTER);
-        paramPanel.add(paramValuesPanel, BorderLayout.LINE_END);
-
-        class LabelChanger implements ChangeListener {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-
+            public Parameter(String name, int min, int max, int value) {
+                nameLabel = new JLabel(name);
+                slider = new JSlider(min, max, value) {{
+                    addChangeListener( (ChangeEvent e) ->
+                        valueLabel.setText(String.valueOf(slider.getValue()))
+                    );
+                }};
+                valueLabel = new JLabel(String.valueOf(value));
             }
         }
 
-        // change listeners για τους sliders
-        numIters.addChangeListener(new LabelChanger());
-        step.addChangeListener(new LabelChanger());
+        // δημιουργία παραμέτρων
+        Parameter numIters = new Parameter("Iterations", 3, 10, 8);
+        Parameter step = new Parameter("Forward step (pixels)", 1, 10, 2);
 
-        var runButton = new JButton("Run");  // button για εκκίνηση
+        // δημιουργία run button
+        JButton runButton = new JButton("Run") {{
+            addActionListener( (ActionEvent e) -> {});
+        }};
 
-        ctrlPanel.add(paramPanel, BorderLayout.CENTER);
-        ctrlPanel.add(runButton, BorderLayout.LINE_END);
+        JPanel ctrlPanel = new JPanel(new BorderLayout()) {{ // panel με controls παραμέτρων και run
+            JPanel paramPanel = new JPanel(new BorderLayout()) {{ // panel με controls παραμέτρων
+                add(new JPanel(new BorderLayout()) {{ // panel με ονόματα παραμέτρων
+                    add(numIters.nameLabel, BorderLayout.PAGE_START);
+                    add(step.nameLabel, BorderLayout.PAGE_END);
+                }}, BorderLayout.LINE_START);
 
-        // Main panel: προσθήκη του control panel
-        mainPanel.add(ctrlPanel, BorderLayout.PAGE_START);
+                add(new JPanel(new BorderLayout()) {{
+                    add(numIters.slider, BorderLayout.PAGE_START);
+                    add(step.slider, BorderLayout.PAGE_END);
+                }}, BorderLayout.CENTER);
+
+                add(new JPanel(new BorderLayout()) {{
+                    add(numIters.valueLabel, BorderLayout.PAGE_START);
+                    add(step.valueLabel, BorderLayout.PAGE_END);
+                }}, BorderLayout.LINE_END);
+            }};
+
+            JPanel runPanel = new JPanel() {{ add(runButton); }};
+
+            add(paramPanel, BorderLayout.CENTER);
+            add(runPanel, BorderLayout.LINE_END);
+        }};
 
         // PlotPanel: εμφάνιση του fractal
-        var plotPanel = new JComponent() {
-            /* ... */
+        JPanel plotPanel = new JPanel() {
+            @Override
+            public void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D)g;
+                g2d.draw(new Line2D.Double(
+                    0, 0, getWidth(), 0
+                ));
+            }
         };
 
-//        plotPanel.setPreferredSize(new Dimension(800, 800));
-        // Main panel: προσθήκη του plot panel
-        mainPanel.add(plotPanel, BorderLayout.CENTER);
-
-        return mainPanel;
+        // Main frame: προσθήκη του control panel και του plot panel
+        add(ctrlPanel, BorderLayout.PAGE_START);
+        add(plotPanel, BorderLayout.CENTER);
     }
 }
