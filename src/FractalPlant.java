@@ -3,17 +3,80 @@ import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 
 public class FractalPlant extends JFrame {
+    private static class Control { // controls παραμέτρων
+        private final JLabel nameLabel;
+        private JSlider slider;
+        private JLabel valueLabel;
+        Control(String name, int min, int max, int value) {
+            nameLabel = new JLabel(name);
+            slider = new JSlider(min, max, value) {{
+                addChangeListener( (ChangeEvent e) ->
+                                           valueLabel.setText(String.valueOf(slider.getValue()))
+                );
+            }};
+            valueLabel = new JLabel(String.valueOf(value));
+        }
+        Control(String name, int min, int max) {
+            this(name, min, max, (min + max) / 2);
+        }
+        public int getValue() { return slider.getValue(); }
+    }
+
+    class PlotPanel extends JPanel {
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            double x = 0, y = 0, N = Math.pow(10, numIters.getValue());
+            for (int n = 0; n < N; n++) {
+                double r = Math.random();
+                if (r < 0.1) {
+                    x = 0.0;
+                    y = 0.16 * y;
+                }
+                else if (r < 0.86) {
+                    x = 0.85 * x + 0.04 * y;
+                    y = -0.04 * x + 0.85 * y + 1.6;
+                }
+                else if (r < 0.93) {
+                    x = 0.2 * x - 0.26 * y;
+                    y = 0.23 * x + 0.22 * y + 1.6;
+                }
+                else {
+                    x = -0.15 * x + 0.28 * y;
+                    y = 0.26 * x + 0.24 * y + 0.44;
+                }
+
+                double scale = 120;
+
+                double panelX = y * scale, panelY = x * scale + getHeight()/2.0;
+
+                g2d.setPaint(Color.GREEN);
+                int strokeWidth = step.getValue();
+                g2d.fill(new Ellipse2D.Double(
+                        panelX - strokeWidth/2.0, panelY - strokeWidth/2.0,
+                        strokeWidth, strokeWidth
+                ));
+            }
+        }
+    }
+
+    Control numIters, step;
+
     public static void main(String[] args) {
         EventQueue.invokeLater(FractalPlant::new);
     }
 
     FractalPlant() {
         super("Fractal Plant");
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(2*screenSize.width/3, 2*screenSize.height/3);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         buildFrame();
 
@@ -22,68 +85,12 @@ public class FractalPlant extends JFrame {
     }
 
     private void buildFrame() {
-        class Parameter { // controls παραμέτρων
-            final JLabel nameLabel;
-            JSlider slider;
-            JLabel valueLabel;
-            Parameter(String name, int min, int max, int value) {
-                nameLabel = new JLabel(name);
-                slider = new JSlider(min, max, value) {{
-                    addChangeListener( (ChangeEvent e) ->
-                        valueLabel.setText(String.valueOf(slider.getValue()))
-                    );
-                }};
-                valueLabel = new JLabel(String.valueOf(value));
-            }
-        }
-
-        // δημιουργία παραμέτρων
-        Parameter numIters = new Parameter("Iterations", 3, 10, 8);
-        Parameter step = new Parameter("Forward step (pixels)", 1, 10, 2);
+        // δημιουργία controls
+        numIters = new Control("Iterations (10^n)", 0, 9);
+        step = new Control("Point diameter (pixels)", 1, 10);
 
         // PlotPanel: εμφάνιση του fractal
-        JPanel plotPanel = new JPanel() {
-//            @Override
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D)g;
-                g2d.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON
-                );
-
-                double width = getWidth(), height = getHeight();
-
-                double x = 0, y = 0, N = numIters.slider.getValue() * 10000;
-                for (int n = 0; n < N; n++) {
-                    double r = Math.random();
-                    if (r < 0.1) {
-                        x = 0.0;
-                        y = 0.16 * y;
-                    }
-                    else if (r < 0.86) {
-                        x = 0.85 * x + 0.04 * y;
-                        y = -0.04 * x + 0.85 * y + 1.6;
-                    }
-                    else if (r < 0.93) {
-                        x = 0.2 * x - 0.26 * y;
-                        y = 0.23 * x + 0.22 * y + 1.6;
-                    }
-                    else {
-                        x = -0.15 * x + 0.28 * y;
-                        y = 0.26 * x + 0.24 * y + 0.44;
-                    }
-
-                    double scale = 120;
-
-                    double panelX = y * scale, panelY = x * scale + height/2;
-
-                    g2d.setPaint(Color.GREEN);
-                    int strokeWidth = step.slider.getValue();
-                    g2d.fill(new Ellipse2D.Double(panelX - 1, panelY - 1, strokeWidth, strokeWidth));
-                }
-            }
-        };
+        JPanel plotPanel = new PlotPanel();
 
         // δημιουργία run button
         JButton runButton = new JButton("Run") {{
@@ -93,29 +100,24 @@ public class FractalPlant extends JFrame {
         }};
 
         // panel με controls παραμέτρων και run
-        JPanel ctrlPanel = new JPanel(new BorderLayout()) {{
+        JPanel ctrlPanel = new JPanel(new FlowLayout()) {{
             // panel με controls παραμέτρων
-            JPanel paramPanel = new JPanel(new BorderLayout()) {{
-                add(new JPanel(new BorderLayout()) {{
-                    add(numIters.nameLabel, BorderLayout.PAGE_START);
-                    add(step.nameLabel, BorderLayout.PAGE_END);
-                }}, BorderLayout.LINE_START);
+            add(new JPanel(new GridLayout(2, 1)) {{
+                add(numIters.nameLabel);
+                add(step.nameLabel);
+            }});
 
-                add(new JPanel(new BorderLayout()) {{
-                    add(numIters.slider, BorderLayout.PAGE_START);
-                    add(step.slider, BorderLayout.PAGE_END);
-                }}, BorderLayout.CENTER);
+            add(new JPanel(new GridLayout(2, 1)) {{
+                add(numIters.slider);
+                add(step.slider);
+            }});
 
-                add(new JPanel(new BorderLayout()) {{
-                    add(numIters.valueLabel, BorderLayout.PAGE_START);
-                    add(step.valueLabel, BorderLayout.PAGE_END);
-                }}, BorderLayout.LINE_END);
-            }};
+            add(new JPanel(new GridLayout(2, 1)) {{
+                add(numIters.valueLabel);
+                add(step.valueLabel);
+            }});
 
-            JPanel runPanel = new JPanel() {{ add(runButton); }};
-
-            add(paramPanel, BorderLayout.CENTER);
-            add(runPanel, BorderLayout.LINE_END);
+            add(new JPanel() {{ add(runButton); }});
         }};
 
         // Main frame: προσθήκη του control panel και του plot panel
