@@ -13,7 +13,7 @@ public class FractalPlant extends JFrame {
             nameLabel = new JLabel(name);
             slider = new JSlider(min, max, value) {{
                 addChangeListener( (ChangeEvent e) ->
-                                           valueLabel.setText(String.valueOf(slider.getValue()))
+                    valueLabel.setText(String.valueOf(slider.getValue()))
                 );
             }};
             valueLabel = new JLabel(String.valueOf(value));
@@ -21,7 +21,12 @@ public class FractalPlant extends JFrame {
         Control(String name, int min, int max) {
             this(name, min, max, (min + max) / 2);
         }
-        public int getValue() { return slider.getValue(); }
+        Control(String name) {
+            this(name, 1, 10);
+        }
+        public int getValue() {
+            return slider.getValue();
+        }
     }
 
     class PlotPanel extends JPanel {
@@ -85,12 +90,12 @@ public class FractalPlant extends JFrame {
     }
 
     private void buildFrame() {
-        // δημιουργία controls
-        numIters = new Control("Iterations (10^n)", 0, 9);
-        step = new Control("Point diameter (pixels)", 1, 10);
-
         // PlotPanel: εμφάνιση του fractal
         JPanel plotPanel = new PlotPanel();
+
+        // δημιουργία controls
+        numIters = new Control("Iterations");
+        step = new Control("Point diameter (pixels)");
 
         // δημιουργία run button
         JButton runButton = new JButton("Run") {{
@@ -121,7 +126,7 @@ public class FractalPlant extends JFrame {
         }};
 
         // Main frame: προσθήκη του control panel και του plot panel
-        add(ctrlPanel, BorderLayout.PAGE_START);
         add(plotPanel, BorderLayout.CENTER);
+        add(ctrlPanel, BorderLayout.PAGE_END);
     }
 }
