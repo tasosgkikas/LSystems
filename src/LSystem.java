@@ -3,15 +3,14 @@ import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
-class LSystem {
+class Producer {
     Map<String, String> rule;
 
-    LSystem(String[] variables, String[] mappings) {
+    Producer(String[] variables, String[] mappings) {
         if (variables.length != mappings.length)
             throw new IllegalArgumentException("Argument arrays must have the same length.");
 
@@ -22,8 +21,6 @@ class LSystem {
 
     String produce(String axiom, int iterations) {
         if (iterations == 0) return axiom;
-
-        System.out.println(axiom);
 
         List<String> tokens = Arrays.asList(axiom.split(""));
         tokens.replaceAll((String token) -> {
@@ -37,15 +34,37 @@ class LSystem {
 
     public static void main(String[] args) {
         System.out.println(
-            (new LSystem(
-                new String[]{"X", "F"},
-                new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
-            )).produce("X", 6)
+            (new Producer( // dragon curve
+                           new String[]{"F", "G"},
+                           new String[]{"F+G", "F-G"}
+            )).produce("F", 3)
         );
     }
 }
 
-public class FractalPlant extends JFrame {
+class Drawer extends Producer {
+    enum Command {FORWARD, RIGHT, LEFT, SAVE, RESTORE};
+    Map<String, Command> cmd = Map.of(
+        "F", Command.FORWARD,
+        "-", Command.RIGHT,
+        "+", Command.LEFT,
+        "[", Command.SAVE,
+        "]", Command.RESTORE
+    );
+    double angleRads;
+
+
+    Drawer() {
+        super(
+            new String[]{"X", "F"},
+            new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
+        );
+    }
+
+
+}
+
+public class LSystem extends JFrame {
     private static class Control { // controls παραμέτρων
         private final JLabel nameLabel;
         private JSlider slider;
@@ -70,7 +89,7 @@ public class FractalPlant extends JFrame {
         }
     }
 
-    class PlotPanel extends JPanel {
+    class BarnsleyFern extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -117,10 +136,10 @@ public class FractalPlant extends JFrame {
     Control numIters, step;
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(FractalPlant::new);
+        EventQueue.invokeLater(LSystem::new);
     }
 
-    FractalPlant() {
+    LSystem() {
         super("Fractal Plant");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
@@ -131,43 +150,56 @@ public class FractalPlant extends JFrame {
     }
 
     private void buildFrame() {
-        // PlotPanel: εμφάνιση του fractal
-        JPanel plotPanel = new PlotPanel();
+        // BarnsleyFern: εμφάνιση του fractal
+        JPanel barnsleyFern = new BarnsleyFern();
 
         // δημιουργία controls
-        numIters = new Control("Iterations");
-        step = new Control("Point diameter (pixels)");
+        Control[] controls = {
+            new Control("Iterations", 1, 10),
+            new Control("Forward step (pixels)", 1, 20, 5),
+            new Control("Angle (degrees)", 10, 90)
+        };
 
         // δημιουργία run button
         JButton runButton = new JButton("Run") {{
             addActionListener( (ActionEvent e) -> {
-                plotPanel.repaint();
+                barnsleyFern.repaint();
             });
         }};
 
         // panel με controls παραμέτρων και run
-        JPanel ctrlPanel = new JPanel(new FlowLayout()) {{
-            // panel με controls παραμέτρων
-            add(new JPanel(new GridLayout(2, 1)) {{
-                add(numIters.nameLabel);
-                add(step.nameLabel);
-            }});
+        JPanel ctrlPanel = new JPanel(new BorderLayout()) {{
+            Field[] fields = Control.class.getDeclaredFields();
 
-            add(new JPanel(new GridLayout(2, 1)) {{
-                add(numIters.slider);
-                add(step.slider);
-            }});
+            Object[] horizontalConstraints = {
+                    BorderLayout.LINE_START,
+                    BorderLayout.CENTER,
+                    BorderLayout.LINE_END
+            };
 
-            add(new JPanel(new GridLayout(2, 1)) {{
-                add(numIters.valueLabel);
-                add(step.valueLabel);
-            }});
+            Map<Field, Object> position = new HashMap<>() {{
+                for (int i = 0; i < fields.length; i++)
+                    put(fields[i], horizontalConstraints[i]);
+            }};
 
-            add(new JPanel() {{ add(runButton); }});
+            JPanel ctrl = new JPanel(new BorderLayout()) {{
+                for (Field field : fields)
+                    // panel με controls παραμέτρων
+                    add(new JPanel(new GridLayout(fields.length, 1)) {{
+                        for (Control control : controls) try {
+                            add((Component) field.get(control));
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }}, position.get(field));
+            }};
+
+            add(ctrl, BorderLayout.CENTER);
+            add(runButton, BorderLayout.LINE_END);
         }};
 
         // Main frame: προσθήκη του control panel και του plot panel
-        add(plotPanel, BorderLayout.CENTER);
+//        add(barnsleyFern, BorderLayout.CENTER);
         add(ctrlPanel, BorderLayout.PAGE_END);
     }
 }
