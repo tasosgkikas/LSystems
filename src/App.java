@@ -2,12 +2,12 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.geom.Ellipse2D;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class LSystem {
     Map<String, String> rule;
@@ -25,10 +25,7 @@ class LSystem {
         if (iterations == 0) return axiom;
 
         List<String> tokens = Arrays.asList(axiom.split(""));
-        tokens.replaceAll((String token) -> {
-            String substitute = rule.get(token);
-            return substitute != null ? substitute : token;
-        });
+        tokens.replaceAll((String token) -> rule.getOrDefault(token, token));
         axiom = String.join("", tokens);
 
         return produce(axiom, iterations - 1);
@@ -42,139 +39,75 @@ class LSystem {
     }
 
     public static void main(String[] args) {
-        System.out.println((new LSystem( // dragon curve
-                    new String[]{"F", "G"},
-                    new String[]{"F+G", "F-G"}
-            )).produce("F", 3)
+        // dragon curve
+        LSystem lSystem = new LSystem(
+            new String[]{"F", "G"},
+            new String[]{"F+G", "F-G"}
         );
+        System.out.println(lSystem);
+
+        String product = lSystem.produce("F", 3);
+        System.out.println(product);
     }
 }
 
-abstract class Drawer extends JPanel {
-    protected static class CommandEnum {
-        private static final List<CommandEnum> values = new ArrayList<>();
+class FractalPlant extends JPanel {
+    static final LSystem lSystem = new LSystem(
+        new String[]{"X", "F"},
+        new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
+    );
+    private String product;
+    private int step, angle;
 
-        protected CommandEnum() {
-            values.add(this);
-        }
-
-        public static List<CommandEnum> values() {
-            return List.copyOf(values);
-        }
+    String produce(int iterations) {
+        return lSystem.produce("X", iterations);
     }
 
-    protected LSystem lSystem;
-    protected Map<String, CommandEnum> commandMap;
-
-    protected Drawer(
-            LSystem lSystem,
-            String[] commandStrings,
-            Class<? extends CommandEnum> Command
-    ) throws IllegalArgumentException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
-
-        System.out.println(Command);
-        if (lSystem == null)
-            throw new IllegalArgumentException(
-                "lSystem argument must not be null"
-            );
-        if (commandStrings == null || commandStrings.length == 0)
-            throw new IllegalArgumentException(
-                "commandStrings argument must not be null or empty"
-            );
-
-        Method valuesMethod = Command.getDeclaredMethod("values");
-        CommandEnum[] commandValues = (CommandEnum[]) valuesMethod.invoke(null);
-        if (commandValues.length != commandStrings.length)
-            throw new IllegalArgumentException(
-                "number of CommandEnum constants must be equal to length of commandStrings"
-            );
-
-        this.lSystem = lSystem;
-        this.commandMap = new HashMap<>() {{
-            for (int i = 0; i < commandStrings.length; i++)
-                put(commandStrings[i], commandValues[i]);
-        }};
-    }
-
-    @Override
-    public String toString() {
-        return "Drawer{" +
-                "lSystem=" + lSystem +
-                ", Command=" + CommandEnum.values().toString() +
-                ", commandMap=" + commandMap +
-                '}';
-    }
-}
-
-class TestDrawer extends Drawer {
-    static class Command extends CommandEnum {
-        static final Command FORWARD = new Command();
-        static final Command RIGHT = new Command();
-        static final Command LEFT = new Command();
-        static final Command SAVE = new Command();
-        static final Command RESTORE = new Command();
-    }
-
-    protected TestDrawer()
-            throws IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, IllegalAccessException {
-
-        super(
-                new LSystem(
-                        new String[]{"X", "F"},
-                        new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
-                ),
-                new String[] {"F", "-", "+", "[", "]"},
-                Command.class
-        );
+    public void repaint(EnumMap<App.Parameter, Integer> paramValues) {
+        this.product = produce(paramValues.get(App.Parameter.ITERATIONS));
+        this.step = paramValues.get(App.Parameter.STEP);
+        this.angle = paramValues.get(App.Parameter.ANGLE);
+        repaint();
     }
 
     @Override
     public void paintComponent(Graphics g) {
+        if (product == null) return;
+
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         g2d.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON
+        );
+        g2d.drawRoundRect(
+                getWidth()/3,
+                getHeight()/3,
+                getWidth()/3,
+                getHeight()/3,
+                100, 50
         );
         System.out.println(this);
     }
 
-    public static void main(String[] args)
-            throws IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, IllegalAccessException {
-
-        (new TestDrawer()).repaint();
+    @Override
+    public String toString() {
+        return "FractalPlant{" +
+                "step=" + step +
+                ", angle=" + angle +
+                '}';
     }
-}
-
-class FractalPlant {
-    LSystem lSystem = new LSystem(
-            new String[]{"X", "F"},
-            new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
-    );
-    enum Command {FORWARD, RIGHT, LEFT, SAVE, RESTORE};
-    Map<String, Command> cmd = Map.of(
-        "F", Command.FORWARD,
-        "-", Command.RIGHT,
-        "+", Command.LEFT,
-        "[", Command.SAVE,
-        "]", Command.RESTORE
-    );
-
-    FractalPlant() {
-    }
-
-
 }
 
 public class App extends JFrame {
-    private static class Control { // controls παραμέτρων
+    enum Parameter {
+        ITERATIONS("Iterations", 1, 10),
+        STEP("Forward step (pixels)", 1, 20, 1),
+        ANGLE("Angle (degrees)", 10, 90);
         private final JLabel nameLabel;
         private JSlider slider;
         private JLabel valueLabel;
-        Control(String name, int min, int max, int value) {
+        Parameter(String name, int min, int max, int value) {
             nameLabel = new JLabel(name);
             slider = new JSlider(min, max, value) {{
                 addChangeListener( (ChangeEvent e) ->
@@ -183,11 +116,8 @@ public class App extends JFrame {
             }};
             valueLabel = new JLabel(String.valueOf(value));
         }
-        Control(String name, int min, int max) {
+        Parameter(String name, int min, int max) {
             this(name, min, max, (min + max) / 2);
-        }
-        Control(String name) {
-            this(name, 1, 10);
         }
         int getValue() {
             return slider.getValue();
@@ -195,38 +125,13 @@ public class App extends JFrame {
 
         @Override
         public String toString() {
-            return "Control{" +
+            return "Parameter{" +
                     "nameLabel=" + nameLabel.getText() +
-                    ", slider=" + slider.getAccessibleContext() +
+                    ", slider=" + slider.getModel() +
                     ", valueLabel=" + valueLabel.getText() +
                     '}';
         }
     }
-
-    class BarnsleyFern extends JPanel {
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D)g;
-            g2d.setRenderingHint(
-                    RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON
-            );
-
-            double x = 0, y = 0;
-            double scale = 120;
-            double panelX = y * scale, panelY = x * scale + getHeight()/2.0;
-
-            g2d.setPaint(Color.GREEN);
-            int strokeWidth = step.getValue();
-            g2d.fill(new Ellipse2D.Double(
-                    panelX - strokeWidth/2.0, panelY - strokeWidth/2.0,
-                    strokeWidth, strokeWidth
-            ));
-        }
-    }
-
-    Control numIters, step;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(App::new);
@@ -240,34 +145,43 @@ public class App extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+
+        addWindowStateListener(e -> {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            if (e.getNewState() == Frame.NORMAL)
+                setSize(
+                    2*screenSize.width/3,
+                    2*screenSize.height/3
+                );
+        });
     }
 
     private void buildFrame() {
-        // BarnsleyFern: εμφάνιση του fractal
-//        JPanel barnsleyFern = new BarnsleyFern();
-
-        // controls creation
-        Control[] controls = {
-            new Control("Iterations", 1, 10),
-            new Control("Forward step (pixels)", 1, 20, 1),
-            new Control("Angle (degrees)", 10, 90)
-        };
+        var plotPanel = new FractalPlant();
 
         // run button creation
         JButton runButton = new JButton("Run") {{
             addActionListener( (ActionEvent e) -> {
-//                barnsleyFern.repaint();
-                for (Control control: controls)
-                    System.out.println(control);
+                plotPanel.repaint(
+                    new EnumMap<>(
+                        Stream.of(Parameter.values())
+                        .collect(Collectors.toMap(
+                            UnaryOperator.identity(),
+                            Parameter::getValue
+                        ))
+                    )
+                );
             });
         }};
 
-        // panel with controls and run button
+        // control panel in main frame
         add(new JPanel(new BorderLayout()) {{
-            // controls panel
+            // parameters panel in control panel
             add(new JPanel(new BorderLayout()) {{
-                // fields of class Control (ie nameLabel, slider...)
-                Field[] fields = Control.class.getDeclaredFields();
+                // fields of class Parameter (ie nameLabel, slider...)
+                Field[] fields = Stream.of(Parameter.class.getDeclaredFields())
+                    .filter(field -> !field.isEnumConstant() && !field.isSynthetic())
+                    .toArray(Field[]::new);
 
                 // field panel positions
                 Object[] horizontalPositions = {
@@ -283,24 +197,25 @@ public class App extends JFrame {
                 }};
 
                 for (Field field : fields)
-                    // adding panel for this field of every control
+                    // field panel in parameters panel
                     add(new JPanel() {{
-                        // vertical layout of the values of this field
+                        // vertical layout of the field panel
                         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-                        for (Control control : controls) try {
-                            // adding vertically the field of this control
-                            add((Component) field.get(control));
+                        for (Parameter parameter : Parameter.values()) try {
+                            // field of parameter in field panel
+                            add((Component) field.get(parameter));
                         } catch (IllegalAccessException e) {
                             throw new RuntimeException(e);
                         }
-                    }}, position.get(field));
-            }}, BorderLayout.CENTER);
+                    }}, position.get(field)); // field panel in parameters panel
+            }}, BorderLayout.CENTER); // parameters panel in control panel
 
+            // runButton in control panel
             add(runButton, BorderLayout.LINE_END);
 
-        }}, BorderLayout.PAGE_END);
+        }}, BorderLayout.PAGE_END); // control panel in main frame
 
-        // Main frame: προσθήκη του control panel και του plot panel
-//        add(barnsleyFern, BorderLayout.CENTER);
+        // add plotPanel to main frame
+        add(plotPanel, BorderLayout.CENTER);
     }
 }
