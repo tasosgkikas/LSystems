@@ -161,17 +161,15 @@ public class App extends JFrame {
 
         // run button creation
         JButton runButton = new JButton("Run") {{
-            addActionListener( (ActionEvent e) -> {
-                plotPanel.repaint(
-                    new EnumMap<>(
-                        Stream.of(Parameter.values())
-                        .collect(Collectors.toMap(
-                            UnaryOperator.identity(),
-                            Parameter::getValue
-                        ))
-                    )
-                );
-            });
+            addActionListener( (ActionEvent e) -> plotPanel.repaint(
+                new EnumMap<>(
+                    Stream.of(Parameter.values())
+                    .collect(Collectors.toMap(
+                        UnaryOperator.identity(),
+                        Parameter::getValue
+                    ))
+                )
+            ));
         }};
 
         // control panel in main frame
