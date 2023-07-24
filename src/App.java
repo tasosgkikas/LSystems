@@ -51,6 +51,39 @@ class LSystem {
     }
 }
 
+enum Parameter {
+    ITERATIONS("Iterations", 1, 10),
+    STEP("Forward step (pixels)", 1, 20, 1),
+    ANGLE("Angle (degrees)", 10, 90);
+    private final JLabel nameLabel;
+    private JSlider slider;
+    private JLabel valueLabel;
+    Parameter(String name, int min, int max, int value) {
+        nameLabel = new JLabel(name);
+        slider = new JSlider(min, max, value) {{
+            addChangeListener( (ChangeEvent e) ->
+                                       valueLabel.setText(String.valueOf(slider.getValue()))
+            );
+        }};
+        valueLabel = new JLabel(String.valueOf(value));
+    }
+    Parameter(String name, int min, int max) {
+        this(name, min, max, (min + max) / 2);
+    }
+    int getValue() {
+        return slider.getValue();
+    }
+
+    @Override
+    public String toString() {
+        return "Parameter{" +
+                "nameLabel=" + nameLabel.getText() +
+                ", slider=" + slider.getModel() +
+                ", valueLabel=" + valueLabel.getText() +
+                '}';
+    }
+}
+
 class FractalPlant extends JPanel {
     static final LSystem lSystem = new LSystem(
         new String[]{"X", "F"},
@@ -63,10 +96,10 @@ class FractalPlant extends JPanel {
         return lSystem.produce("X", iterations);
     }
 
-    public void repaint(EnumMap<App.Parameter, Integer> paramValues) {
-        this.product = produce(paramValues.get(App.Parameter.ITERATIONS));
-        this.step = paramValues.get(App.Parameter.STEP);
-        this.angle = paramValues.get(App.Parameter.ANGLE);
+    public void repaint(EnumMap<Parameter, Integer> paramValues) {
+        this.product = produce(paramValues.get(Parameter.ITERATIONS));
+        this.step = paramValues.get(Parameter.STEP);
+        this.angle = paramValues.get(Parameter.ANGLE);
         repaint();
     }
 
@@ -100,39 +133,6 @@ class FractalPlant extends JPanel {
 }
 
 public class App extends JFrame {
-    enum Parameter {
-        ITERATIONS("Iterations", 1, 10),
-        STEP("Forward step (pixels)", 1, 20, 1),
-        ANGLE("Angle (degrees)", 10, 90);
-        private final JLabel nameLabel;
-        private JSlider slider;
-        private JLabel valueLabel;
-        Parameter(String name, int min, int max, int value) {
-            nameLabel = new JLabel(name);
-            slider = new JSlider(min, max, value) {{
-                addChangeListener( (ChangeEvent e) ->
-                    valueLabel.setText(String.valueOf(slider.getValue()))
-                );
-            }};
-            valueLabel = new JLabel(String.valueOf(value));
-        }
-        Parameter(String name, int min, int max) {
-            this(name, min, max, (min + max) / 2);
-        }
-        int getValue() {
-            return slider.getValue();
-        }
-
-        @Override
-        public String toString() {
-            return "Parameter{" +
-                    "nameLabel=" + nameLabel.getText() +
-                    ", slider=" + slider.getModel() +
-                    ", valueLabel=" + valueLabel.getText() +
-                    '}';
-        }
-    }
-
     public static void main(String[] args) {
         EventQueue.invokeLater(App::new);
     }
