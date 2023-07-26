@@ -3,6 +3,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 abstract class Drawer extends JPanel {
     private final String AXIOM;
@@ -15,10 +18,6 @@ abstract class Drawer extends JPanel {
     public Drawer(String axiom, LSystem lSystem) {
         AXIOM = axiom;
         LSYSTEM = lSystem;
-    }
-
-    protected int getITERATIONS() {
-        return ITERATIONS;
     }
 
     abstract protected void paintComponent(Graphics2D canvas);
@@ -46,5 +45,33 @@ abstract class Drawer extends JPanel {
         );
 
         paintComponent(canvas);
+    }
+
+    private String fixPRODUCT(char[] forwardChars) {
+        Map<Character, Character> substitute = new HashMap<>() {{
+            for (char c : forwardChars) put(c, 'F');
+        }};
+        return PRODUCT.chars()
+                .mapToObj(c -> (char) c)
+                .map(c -> substitute.getOrDefault(c,c))
+                .toString();
+    }
+
+    protected void paintBasic(Graphics2D canvas, char[] forwardChars) {
+        for (char c : fixPRODUCT(forwardChars).toCharArray())
+            switch (c) {
+                case 'F' -> { // draw forward
+                    canvas.drawLine(0, 0, STEP, 0);
+                    canvas.translate(STEP, 0);
+                }
+                case '+' -> // turn left
+                        canvas.rotate(-ANGLE);
+                case '-' -> // turn right
+                        canvas.rotate(+ANGLE);
+            }
+    }
+
+    protected int getITERATIONS() {
+        return ITERATIONS;
     }
 }
