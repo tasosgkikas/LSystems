@@ -18,12 +18,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class App extends JFrame {
+    private static class RunButton extends JButton {
+        public RunButton(Drawer plotPanel) {
+            super("Run");
+            addActionListener( (ActionEvent e) -> plotPanel.repaint(
+                new EnumMap<>(
+                    Stream.of(Parameter.values())
+                    .collect(Collectors.toMap(
+                        UnaryOperator.identity(),
+                        Parameter::getValue
+                    ))
+                )
+            ));
+        }
+    }
+
     public static void main(String[] args) {
         EventQueue.invokeLater(App::new);
     }
 
-    App() {
-        super("Fractal Plant");
+    private App() {
+        super("L-System");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         buildFrame();
@@ -42,20 +57,8 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        var plotPanel = new FractalPlant();
-
-        // run button creation
-        JButton runButton = new JButton("Run") {{
-            addActionListener( (ActionEvent e) -> plotPanel.repaint(
-                new EnumMap<>(
-                    Stream.of(Parameter.values())
-                    .collect(Collectors.toMap(
-                        UnaryOperator.identity(),
-                        Parameter::getValue
-                    ))
-                )
-            ));
-        }};
+        Drawer plotPanel = new FractalPlant();
+        RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame
         add(new JPanel(new BorderLayout()) {{

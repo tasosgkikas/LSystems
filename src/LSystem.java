@@ -25,6 +25,15 @@ class LSystem {
         return produce(axiom, iterations - 1);
     }
 
+    String produce2(String axiom, int iterations) {
+        for (int i = 0; i < iterations; i++) {
+            List<String> tokens = Arrays.asList(axiom.split(""));
+            tokens.replaceAll((String token) -> rule.getOrDefault(token, token));
+            axiom = String.join("", tokens);
+        }
+        return axiom;
+    }
+
     @Override
     public String toString() {
         return "LSystem{" +
@@ -35,8 +44,8 @@ class LSystem {
     public static void main(String[] args) {
         // dragon curve
         LSystem lSystem = new LSystem(
-                new String[]{"F", "G"},
-                new String[]{"F+G", "F-G"}
+            new String[]{"F", "G"},
+            new String[]{"F+G", "F-G"}
         );
         System.out.println(lSystem);
 
