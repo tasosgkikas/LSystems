@@ -1,7 +1,6 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.EnumMap;
@@ -41,8 +40,10 @@ class FractalPlant extends Drawer {
             RenderingHints.VALUE_ANTIALIAS_ON
         );
 
-        Deque<AffineTransform> stack = new ArrayDeque<>();
+        Deque<Double> stackA = new ArrayDeque<>();
+        Deque<Integer> stackX = new ArrayDeque<>();
 
+        double a = 0; // angle
         int x = 0;
         final int y = getHeight()/2;
 
@@ -52,14 +53,24 @@ class FractalPlant extends Drawer {
                     canvas.drawLine(x, y, x + dx, y);
                     x += dx;
                 }
-                case '-' -> // turn right
-                        canvas.rotate(-da, x, y);
-                case '+' -> // turn left
-                        canvas.rotate(da, x, y);
-                case '[' -> // save
-                        stack.push(canvas.getTransform());
-                case ']' -> // restore
-                        canvas.setTransform(stack.pop());
+                case '-' -> { // turn right
+                    canvas.rotate(-da, x, y);
+                    a -= da;
+                }
+                case '+' -> { // turn left
+                    canvas.rotate(da, x, y);
+                    a += da;
+                }
+                case '[' -> { // save
+                    stackA.push(a);
+                    stackX.push(x);
+                }
+                case ']' -> { // restore
+                    double aNext = stackA.pop();
+                    canvas.rotate(aNext - a, x, y);
+                    a = aNext;
+                    x = stackX.pop();
+                }
             }
     }
 
