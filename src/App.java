@@ -57,7 +57,7 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        Drawer plotPanel = new SierpinskiTriangle();
+        Drawer plotPanel = new Koch.SnowFlake();
         RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame

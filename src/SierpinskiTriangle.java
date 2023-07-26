@@ -19,9 +19,9 @@ public class SierpinskiTriangle extends Drawer{
                     canvas.translate(dx, 0);
                 }
                 case '+' -> // turn left
-                        canvas.rotate(da);
+                    canvas.rotate(da);
                 case '-' -> // turn right
-                        canvas.rotate(Math.TAU-da);
+                    canvas.rotate(-da);
             }
     }
 }

@@ -6,8 +6,8 @@ import java.awt.event.ActionEvent;
 
 enum Parameter {
     ITERATIONS("Iterations", 1, 10, 1),
-    STEP("Forward step (pixels)", 1, 20, 20),
-    ANGLE("Angle (degrees)", 1, 179, 120);
+    STEP("Forward step (pixels)", 1, 20, 4),
+    ANGLE("Angle (degrees)", 1, 179, 60);
 
     final JLabel nameLabel;
     JSlider slider;
