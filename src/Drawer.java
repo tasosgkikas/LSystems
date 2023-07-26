@@ -9,8 +9,8 @@ abstract class Drawer extends JPanel {
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;
     protected String PRODUCT; // the result of LSYSTEM.produce()
-    protected int DX; // number of pixels per drawn line
-    protected double DA; // rotation angle in radians
+    protected int STEP; // number of pixels per drawn line
+    protected double ANGLE; // rotation angle in radians
 
     public Drawer(String axiom, LSystem lSystem) {
         AXIOM = axiom;
@@ -25,8 +25,8 @@ abstract class Drawer extends JPanel {
             PRODUCT = LSYSTEM.produce(AXIOM, iterations);
             ITERATIONS = iterations;
         }
-        DX = paramValues.get(Parameter.STEP);
-        DA = Math.toRadians(paramValues.get(Parameter.ANGLE));
+        STEP = paramValues.get(Parameter.STEP);
+        ANGLE = Math.toRadians(paramValues.get(Parameter.ANGLE));
         repaint();
     }
 

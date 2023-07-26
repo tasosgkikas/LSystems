@@ -13,13 +13,13 @@ abstract class Koch extends Drawer {
         for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
-                    canvas.drawLine(0, 0, DX, 0);
-                    canvas.translate(DX, 0);
+                    canvas.drawLine(0, 0, STEP, 0);
+                    canvas.translate(STEP, 0);
                 }
                 case '+' -> // turn left
-                    canvas.rotate(-DA);
+                    canvas.rotate(-ANGLE);
                 case '-' -> // turn right
-                    canvas.rotate(+DA);
+                    canvas.rotate(+ANGLE);
             }
     }
 

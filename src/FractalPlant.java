@@ -22,16 +22,16 @@ class FractalPlant extends Drawer {
         for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
-                    canvas.drawLine(x, y, x + DX, y);
-                    x += DX;
+                    canvas.drawLine(x, y, x + STEP, y);
+                    x += STEP;
                 }
                 case '-' -> { // turn right
-                    canvas.rotate(-DA, x, y);
-                    a -= DA;
+                    canvas.rotate(-ANGLE, x, y);
+                    a -= ANGLE;
                 }
                 case '+' -> { // turn left
-                    canvas.rotate(DA, x, y);
-                    a += DA;
+                    canvas.rotate(ANGLE, x, y);
+                    a += ANGLE;
                 }
                 case '[' -> { // save
                     stackA.push(a);
