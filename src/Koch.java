@@ -10,16 +10,16 @@ abstract class Koch extends Drawer {
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
-        for (char c : product.toCharArray())
+        for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
-                    canvas.drawLine(0, 0, dx, 0);
-                    canvas.translate(dx, 0);
+                    canvas.drawLine(0, 0, DX, 0);
+                    canvas.translate(DX, 0);
                 }
                 case '+' -> // turn left
-                    canvas.rotate(-da);
+                    canvas.rotate(-DA);
                 case '-' -> // turn right
-                    canvas.rotate(+da);
+                    canvas.rotate(+DA);
             }
     }
 

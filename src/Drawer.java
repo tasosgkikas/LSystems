@@ -5,34 +5,34 @@ import java.awt.RenderingHints;
 import java.util.EnumMap;
 
 abstract class Drawer extends JPanel {
-    private final String axiom;
-    private final LSystem lSystem;
-    private int iterations = -1;
-    protected String product;
-    protected int dx;
-    protected double da; // a for angle
+    private final String AXIOM;
+    private final LSystem LSYSTEM;
+    private int ITERATIONS = -1;
+    protected String PRODUCT;
+    protected int DX; // number of pixel per drawn line
+    protected double DA; // rotation angle in radians
 
     public Drawer(String axiom, LSystem lSystem) {
-        this.axiom = axiom;
-        this.lSystem = lSystem;
+        AXIOM = axiom;
+        LSYSTEM = lSystem;
     }
 
     abstract protected void paintComponent(Graphics2D canvas);
 
     public void repaint(EnumMap<Parameter, Integer> paramValues) {
         int iterations = paramValues.get(Parameter.ITERATIONS);
-        if (iterations != this.iterations) {
-            this.product = lSystem.produce(axiom, iterations);
-            this.iterations = iterations;
+        if (iterations != ITERATIONS) {
+            PRODUCT = LSYSTEM.produce(AXIOM, iterations);
+            ITERATIONS = iterations;
         }
-        this.dx = paramValues.get(Parameter.STEP);
-        this.da = Math.toRadians(paramValues.get(Parameter.ANGLE));
+        DX = paramValues.get(Parameter.STEP);
+        DA = Math.toRadians(paramValues.get(Parameter.ANGLE));
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (product == null) return;
+        if (PRODUCT == null) return;
 
         super.paintComponent(g);
         Graphics2D canvas = (Graphics2D)g;

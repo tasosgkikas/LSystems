@@ -19,19 +19,19 @@ class FractalPlant extends Drawer {
         int x = 0;
         final int y = getHeight()/2;
 
-        for (char c : product.toCharArray())
+        for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
-                    canvas.drawLine(x, y, x + dx, y);
-                    x += dx;
+                    canvas.drawLine(x, y, x + DX, y);
+                    x += DX;
                 }
                 case '-' -> { // turn right
-                    canvas.rotate(-da, x, y);
-                    a -= da;
+                    canvas.rotate(-DA, x, y);
+                    a -= DA;
                 }
                 case '+' -> { // turn left
-                    canvas.rotate(da, x, y);
-                    a += da;
+                    canvas.rotate(DA, x, y);
+                    a += DA;
                 }
                 case '[' -> { // save
                     stackA.push(a);
