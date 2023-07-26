@@ -9,6 +9,7 @@ enum Parameter {
     final JLabel nameLabel;
     JSlider slider;
     JLabel valueLabel;
+
     Parameter(String name, int min, int max, int value) {
         nameLabel = new JLabel(name);
         slider = new JSlider(min, max, value) {{
