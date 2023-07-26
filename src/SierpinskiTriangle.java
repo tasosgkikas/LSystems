@@ -10,6 +10,18 @@ public class SierpinskiTriangle extends Drawer{
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
+        canvas.translate(getWidth()/2, getHeight()/2);
 
+        for (char c : product.toCharArray())
+            switch (c) {
+                case 'F', 'G' -> { // draw forward
+                    canvas.drawLine(0, 0, dx, 0);
+                    canvas.translate(dx, 0);
+                }
+                case '+' -> // turn left
+                        canvas.rotate(da);
+                case '-' -> // turn right
+                        canvas.rotate(Math.TAU-da);
+            }
     }
 }

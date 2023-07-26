@@ -5,9 +5,9 @@ import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 
 enum Parameter {
-    ITERATIONS("Iterations", 1, 10, 5),
-    STEP("Forward step (pixels)", 1, 20, 5),
-    ANGLE("Angle (degrees)", 1, 179, 25);
+    ITERATIONS("Iterations", 1, 10, 1),
+    STEP("Forward step (pixels)", 1, 20, 20),
+    ANGLE("Angle (degrees)", 1, 179, 45);
 
     final JLabel nameLabel;
     JSlider slider;
