@@ -8,6 +8,7 @@ class FractalPlant extends Drawer {
         new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
     );
 
+    @Override
     protected String produce(int iterations) {
         return lSystem.produce("X", iterations);
     }
