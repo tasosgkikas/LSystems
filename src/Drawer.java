@@ -5,17 +5,24 @@ import java.awt.RenderingHints;
 import java.util.EnumMap;
 
 abstract class Drawer extends JPanel {
+    private final String axiom;
+    private final LSystem lSystem;
+    private int iterations;
     protected String product;
-    protected int iterations, dx;
+    protected int dx;
     protected double da; // a for angle
 
-    abstract protected String produce(int iterations);
+    public Drawer(String axiom, LSystem lSystem) {
+        this.axiom = axiom;
+        this.lSystem = lSystem;
+    }
+
     abstract protected void paintComponent(Graphics2D canvas);
 
     public void repaint(EnumMap<Parameter, Integer> paramValues) {
         int iterations = paramValues.get(Parameter.ITERATIONS);
         if (iterations != this.iterations) {
-            this.product = produce(iterations);
+            this.product = lSystem.produce(axiom, iterations);
             this.iterations = iterations;
         }
         this.dx = paramValues.get(Parameter.STEP);

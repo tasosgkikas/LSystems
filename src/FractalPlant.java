@@ -3,14 +3,11 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 class FractalPlant extends Drawer {
-    static final LSystem lSystem = new LSystem(
-        new String[]{"X", "F"},
-        new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
-    );
-
-    @Override
-    protected String produce(int iterations) {
-        return lSystem.produce("X", iterations);
+    FractalPlant() {
+        super("X", new LSystem(
+            new String[]{"X", "F"},
+            new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}
+        ));
     }
 
     @Override

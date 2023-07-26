@@ -1,14 +1,11 @@
-import java.awt.*;
+import java.awt.Graphics2D;
 
 public class SierpinskiTriangle extends Drawer{
-    static final LSystem lSystem = new LSystem(
-        new String[]{"F", "G"},
-        new String[]{"F−G+F+G−F", "GG"}
-    );
-
-    @Override
-    protected String produce(int iterations) {
-        return lSystem.produce("F-F-F", iterations);
+    SierpinskiTriangle() {
+        super("F-F-F", new LSystem(
+            new String[]{"F", "G"},
+            new String[]{"F−G+F+G−F", "GG"}
+        ));
     }
 
     @Override
