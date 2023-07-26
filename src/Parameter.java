@@ -23,13 +23,4 @@ enum Parameter {
     int getValue() {
         return slider.getValue();
     }
-
-    @Override
-    public String toString() {
-        return "Parameter{" +
-                "nameLabel=" + nameLabel.getText() +
-                ", slider=" + slider.getModel() +
-                ", valueLabel=" + valueLabel.getText() +
-                '}';
-    }
 }

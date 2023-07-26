@@ -34,13 +34,6 @@ class LSystem {
         return axiom;
     }
 
-    @Override
-    public String toString() {
-        return "LSystem{" +
-                "rule=" + rule +
-                '}';
-    }
-
     public static void main(String[] args) {
         // dragon curve
         LSystem lSystem = new LSystem(
