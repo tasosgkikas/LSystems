@@ -1,4 +1,4 @@
-import java.awt.*;
+import java.awt.Graphics2D;
 
 class DragonCurve extends Drawer {
     DragonCurve() {

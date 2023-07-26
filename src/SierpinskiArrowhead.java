@@ -1,4 +1,4 @@
-import java.awt.*;
+import java.awt.Graphics2D;
 
 class SierpinskiArrowhead extends Drawer {
     public SierpinskiArrowhead() {
