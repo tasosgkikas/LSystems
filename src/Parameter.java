@@ -5,7 +5,7 @@ import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 
 enum Parameter {
-    ITERATIONS("Iterations", 1, 10, 1),
+    ITERATIONS("Iterations", 0, 10, 0),
     STEP("Forward step (pixels)", 1, 20, 4),
     ANGLE("Angle (degrees)", 1, 179, 60);
 

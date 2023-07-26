@@ -7,7 +7,7 @@ import java.util.EnumMap;
 abstract class Drawer extends JPanel {
     private final String axiom;
     private final LSystem lSystem;
-    private int iterations;
+    private int iterations = -1;
     protected String product;
     protected int dx;
     protected double da; // a for angle
