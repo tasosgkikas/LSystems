@@ -8,8 +8,8 @@ abstract class Drawer extends JPanel {
     private final String AXIOM;
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;
-    protected String PRODUCT;
-    protected int DX; // number of pixel per drawn line
+    protected String PRODUCT; // the result of LSYSTEM.produce()
+    protected int DX; // number of pixels per drawn line
     protected double DA; // rotation angle in radians
 
     public Drawer(String axiom, LSystem lSystem) {
