@@ -1,23 +1,32 @@
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
+import java.awt.event.ActionEvent;
 
 enum Parameter {
     ITERATIONS("Iterations", 1, 10, 5),
     STEP("Forward step (pixels)", 1, 20, 5),
-    ANGLE("Angle (degrees)", 10, 90, 25);
+    ANGLE("Angle (degrees)", 1, 179, 25);
+
     final JLabel nameLabel;
     JSlider slider;
-    JLabel valueLabel;
+    JTextField valueField;
 
     Parameter(String name, int min, int max, int value) {
         nameLabel = new JLabel(name);
         slider = new JSlider(min, max, value) {{
             addChangeListener( (ChangeEvent e) ->
-                valueLabel.setText(String.valueOf(slider.getValue()))
+                valueField.setText(String.valueOf(slider.getValue()))
             );
         }};
-        valueLabel = new JLabel(String.valueOf(value));
+        String text = String.valueOf(value);
+        int columns = String.valueOf(slider.getMaximum()).length() - 1;
+        valueField = new JTextField(text, columns) {{
+            addActionListener( (ActionEvent e) ->
+                slider.setValue(Integer.parseInt(valueField.getText()))
+            );
+        }};
     }
 
     int getValue() {
