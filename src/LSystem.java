@@ -1,12 +1,11 @@
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class LSystem {
-    Map<String, String> rule;
+    Map<Character, String> rule;
 
-    LSystem(String[] variables, String[] mappings) {
+    LSystem(char[] variables, String[] mappings) {
         if (variables.length != mappings.length)
             throw new IllegalArgumentException("Argument arrays must have the same length.");
 
@@ -16,11 +15,11 @@ class LSystem {
     }
 
     String produce(String axiom, int iterations) {
-        for (int i = 0; i < iterations; i++) {
-            List<String> tokens = Arrays.asList(axiom.split(""));
-            tokens.replaceAll((String token) -> rule.getOrDefault(token, token));
-            axiom = String.join("", tokens);
-        }
+        for (int i = 0; i < iterations; i++)
+            axiom = axiom.chars()
+                    .mapToObj(c -> (char) c)
+                    .map(c -> rule.getOrDefault(c, String.valueOf(c)))
+                    .collect(Collectors.joining());
         return axiom;
     }
 }

@@ -5,7 +5,7 @@ import java.awt.RenderingHints;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 abstract class Drawer extends JPanel {
     private final String AXIOM;
@@ -54,7 +54,8 @@ abstract class Drawer extends JPanel {
         return PRODUCT.chars()
                 .mapToObj(c -> (char) c)
                 .map(c -> substitute.getOrDefault(c,c))
-                .toString();
+                .map(String::valueOf)
+                .collect(Collectors.joining());
     }
 
     protected void paintBasic(Graphics2D canvas, char[] forwardChars) {
@@ -65,9 +66,9 @@ abstract class Drawer extends JPanel {
                     canvas.translate(STEP, 0);
                 }
                 case '+' -> // turn left
-                        canvas.rotate(-ANGLE);
+                    canvas.rotate(-ANGLE);
                 case '-' -> // turn right
-                        canvas.rotate(+ANGLE);
+                    canvas.rotate(+ANGLE);
             }
     }
 

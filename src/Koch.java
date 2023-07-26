@@ -3,24 +3,14 @@ import java.awt.Graphics2D;
 abstract class Koch extends Drawer {
     protected Koch(String axiom) {
         super(axiom, new LSystem(
-            new String[]{"F"},
+            new char[]{'F'},
             new String[]{"F+F--F+F"}
         ));
     }
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
-        for (char c : PRODUCT.toCharArray())
-            switch (c) {
-                case 'F' -> { // draw forward
-                    canvas.drawLine(0, 0, STEP, 0);
-                    canvas.translate(STEP, 0);
-                }
-                case '+' -> // turn left
-                    canvas.rotate(-ANGLE);
-                case '-' -> // turn right
-                    canvas.rotate(+ANGLE);
-            }
+        paintBasic(canvas, new char[]{'F'});
     }
 
     static class Curve extends Koch {
