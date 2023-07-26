@@ -10,8 +10,9 @@ class SierpinskiArrowhead extends Drawer {
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
-        canvas.translate(0, getHeight()-5);
+        if (getITERATIONS() % 2 == 0) ANGLE = -ANGLE;
 
+        canvas.translate(0, getHeight()-5);
         for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'A', 'B' -> { // draw forward

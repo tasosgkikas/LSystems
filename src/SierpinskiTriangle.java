@@ -11,7 +11,6 @@ public class SierpinskiTriangle extends Drawer{
     @Override
     protected void paintComponent(Graphics2D canvas) {
         canvas.translate(0, getHeight()-5);
-
         for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'F', 'G' -> { // draw forward

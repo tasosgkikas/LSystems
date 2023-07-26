@@ -17,6 +17,10 @@ abstract class Drawer extends JPanel {
         LSYSTEM = lSystem;
     }
 
+    protected int getITERATIONS() {
+        return ITERATIONS;
+    }
+
     abstract protected void paintComponent(Graphics2D canvas);
 
     public void repaint(EnumMap<Parameter, Integer> paramValues) {
