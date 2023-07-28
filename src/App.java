@@ -57,7 +57,7 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        Drawer plotPanel = new Koch.SnowFlake();
+        Drawer plotPanel = new FractalPlant();
         RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame

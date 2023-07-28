@@ -16,17 +16,18 @@ class FractalPlant extends Drawer {
     protected void paintComponent(Graphics2D canvas) {
         Deque<AffineTransform> transformStack = new ArrayDeque<>();
         canvas.setPaint(new Color(70, 100, 0));
-        canvas.translate(0, getHeight()/2);
+        canvas.translate(0, getHeight());
+        canvas.rotate(Math.PI*4/3);
         for (char c : PRODUCT.toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
-                    canvas.drawLine(0, 0, STEP, 0);
-                    canvas.translate(STEP, 0);
+                    canvas.drawLine(0, 0, 0, STEP);
+                    canvas.translate(0, STEP);
                 }
                 case '+' -> // turn left
-                    canvas.rotate(ANGLE);
-                case '-' -> // turn right
                     canvas.rotate(-ANGLE);
+                case '-' -> // turn right
+                    canvas.rotate(ANGLE);
                 case '[' -> // save
                     transformStack.push(canvas.getTransform());
                 case ']' -> // restore

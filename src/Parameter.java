@@ -5,8 +5,8 @@ import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 
 enum Parameter {
-    ITERATIONS("Iterations", 0, 10, 9),
-    STEP("Forward step (pixels)", 1, 20, 1),
+    ITERATIONS("Iterations", 0, 10, 8),
+    STEP("Forward step (pixels)", 1, 256, 2),
     ANGLE("Angle (degrees)", 1, 179, 25);
 
     final JLabel nameLabel;
