@@ -44,6 +44,9 @@ abstract class Drawer extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON
         );
 
+        canvas.translate(0, getHeight());
+        canvas.scale(1, -1);
+
         paintComponent(canvas);
     }
 
@@ -66,9 +69,9 @@ abstract class Drawer extends JPanel {
                     canvas.translate(STEP, 0);
                 }
                 case '+' -> // turn left
-                    canvas.rotate(-ANGLE);
+                    canvas.rotate(ANGLE);
                 case '-' -> // turn right
-                    canvas.rotate(+ANGLE);
+                    canvas.rotate(-ANGLE);
             }
     }
 
