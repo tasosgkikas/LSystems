@@ -10,7 +10,8 @@ public class SierpinskiTriangle extends Drawer{
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
-        canvas.translate(0, getHeight()-5);
+        canvas.translate(0, 5);
+        canvas.scale(1, -1);
         paintBasic(canvas, new char[]{'F', 'G'});
     }
 }
