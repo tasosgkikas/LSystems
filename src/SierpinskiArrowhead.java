@@ -10,9 +10,9 @@ class SierpinskiArrowhead extends Drawer {
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
-        if (getITERATIONS() % 2 == 0) ANGLE = -ANGLE;
+        if (getITERATIONS() % 2 == 1) ANGLE = -ANGLE;
 
-        canvas.translate(0, getHeight()-5);
+        canvas.translate(0, 5);
         paintBasic(canvas, new char[]{'A', 'B'});
     }
 }
