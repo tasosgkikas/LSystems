@@ -11,6 +11,6 @@ class DragonCurve extends Drawer {
     @Override
     protected void paintComponent(Graphics2D canvas) {
         canvas.translate(getWidth()/2, getHeight()/2);
-        paintBasic(canvas, new char[]{'F', 'G'});
+        paintBasic(canvas, 'F', 'G');
     }
 }

@@ -13,6 +13,6 @@ class SierpinskiArrowhead extends Drawer {
         if (getITERATIONS() % 2 == 1) ANGLE = -ANGLE;
 
         canvas.translate(0, 5);
-        paintBasic(canvas, new char[]{'A', 'B'});
+        paintBasic(canvas, 'A', 'B');
     }
 }

@@ -50,7 +50,7 @@ abstract class Drawer extends JPanel {
         paintComponent(canvas);
     }
 
-    private String fixPRODUCT(char[] forwardChars) {
+    private String fixPRODUCT(char... forwardChars) {
         Map<Character, Character> substitute = new HashMap<>() {{
             for (char c : forwardChars) put(c, 'F');
         }};
@@ -61,7 +61,7 @@ abstract class Drawer extends JPanel {
                 .collect(Collectors.joining());
     }
 
-    protected void paintBasic(Graphics2D canvas, char[] forwardChars) {
+    protected void paintBasic(Graphics2D canvas, char... forwardChars) {
         for (char c : fixPRODUCT(forwardChars).toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward

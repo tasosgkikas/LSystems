@@ -10,7 +10,7 @@ abstract class Koch extends Drawer {
 
     @Override
     protected void paintComponent(Graphics2D canvas) {
-        paintBasic(canvas, new char[]{'F'});
+        paintBasic(canvas, 'F');
     }
 
     static class Curve extends Koch {
