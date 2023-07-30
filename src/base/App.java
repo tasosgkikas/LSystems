@@ -1,8 +1,6 @@
 package base;
 
-import predefined.Gosper;
-import predefined.SierpinskiSquare;
-import predefined.TreeBranches;
+import predefined.*;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -63,7 +61,7 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        Drawer plotPanel = new Gosper();
+        Drawer plotPanel = new Hilbert();
         RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame
