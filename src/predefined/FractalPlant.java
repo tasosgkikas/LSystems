@@ -1,11 +1,14 @@
+package predefined;
+
+import base.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-class FractalPlant extends Drawer {
-    FractalPlant() {
+public class FractalPlant extends Drawer {
+    public FractalPlant() {
         super("X", new LSystem(
             new char[]{'X', 'F'},
             new String[]{"F+[[X]-X]-F[-FX]+X", "FF"}

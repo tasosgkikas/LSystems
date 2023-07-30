@@ -1,7 +1,10 @@
+package predefined;
+
+import base.*;
 import java.awt.Graphics2D;
 
-public class SierpinskiTriangle extends Drawer{
-    SierpinskiTriangle() {
+public class SierpinskiTriangle extends Drawer {
+    public SierpinskiTriangle() {
         super("F-F-F", new LSystem(
             new char[]{'F', 'G'},
             new String[]{"F-G+F+G-F", "GG"}

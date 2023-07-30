@@ -1,3 +1,5 @@
+package base;
+
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -7,7 +9,7 @@ import java.awt.event.ActionEvent;
 enum Parameter {
     ITERATIONS("Iterations", 0, 10, 8),
     STEP("Forward step (pixels)", 1, 256, 2),
-    ANGLE("Angle (degrees)", 1, 179, 25);
+    ANGLE("Angle (degrees)", 0, 180, 90);
 
     final JLabel nameLabel;
     JSlider slider;

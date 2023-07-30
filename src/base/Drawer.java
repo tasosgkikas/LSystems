@@ -1,3 +1,5 @@
+package base;
+
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-abstract class Drawer extends JPanel {
+public abstract class Drawer extends JPanel {
     private final String AXIOM;
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;

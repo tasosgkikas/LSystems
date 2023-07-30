@@ -1,6 +1,9 @@
-import java.awt.*;
+package predefined;
 
-class DottedLine extends Drawer {
+import base.*;
+import java.awt.Graphics2D;
+
+public class DottedLine extends Drawer {
     public DottedLine() {
         super("F", new LSystem(
             new char[]{'F', 'X'},

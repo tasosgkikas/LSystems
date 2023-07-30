@@ -1,11 +1,13 @@
+package base;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-class LSystem {
+public class LSystem {
     Map<Character, String> rule;
 
-    LSystem(char[] variables, String[] mappings) {
+    public LSystem(char[] variables, String[] mappings) {
         if (variables.length != mappings.length)
             throw new IllegalArgumentException("Argument arrays must have the same length.");
 

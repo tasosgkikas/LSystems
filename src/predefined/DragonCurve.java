@@ -1,7 +1,10 @@
+package predefined;
+
+import base.*;
 import java.awt.Graphics2D;
 
-class DragonCurve extends Drawer {
-    DragonCurve() {
+public class DragonCurve extends Drawer {
+    public DragonCurve() {
         super("F", new LSystem(
             new char[]{'F', 'G'},
             new String[]{"F+G", "F-G"}

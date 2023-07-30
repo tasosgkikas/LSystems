@@ -1,6 +1,9 @@
+package predefined;
+
+import base.*;
 import java.awt.Graphics2D;
 
-abstract class Koch extends Drawer {
+public abstract class Koch extends Drawer {
     protected Koch(String axiom) {
         super(axiom, new LSystem(
             new char[]{'F'},
@@ -13,8 +16,8 @@ abstract class Koch extends Drawer {
         paintBasic(canvas, 'F');
     }
 
-    static class Curve extends Koch {
-        Curve() {
+    public static class Curve extends Koch {
+        public Curve() {
             super("F");
         }
 
@@ -25,8 +28,8 @@ abstract class Koch extends Drawer {
         }
     }
 
-    static class SnowFlake extends Koch {
-        SnowFlake() {
+    public static class SnowFlake extends Koch {
+        public SnowFlake() {
             super("F--F--F");
         }
 

@@ -1,6 +1,9 @@
-import java.awt.*;
+package predefined;
 
-class LevyC extends Drawer {
+import base.*;
+import java.awt.Graphics2D;
+
+public class LevyC extends Drawer {
     public LevyC() {
         super("F", new LSystem(
             new char[]{'F'},

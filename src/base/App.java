@@ -1,3 +1,8 @@
+package base;
+
+import predefined.SierpinskiSquare;
+import predefined.TreeBranches;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -57,14 +62,14 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        Drawer plotPanel = new TreeBranches();
+        Drawer plotPanel = new SierpinskiSquare();
         RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame
         add(new JPanel(new BorderLayout()) {{
             // parameters panel in control panel
             add(new JPanel(new BorderLayout()) {{
-                // instance fields of class Parameter (ie nameLabel)
+                // instance fields of class base.Parameter (ie nameLabel)
                 Field[] fields = Stream.of(Parameter.class.getDeclaredFields())
                     .filter(field -> !field.isEnumConstant() && !field.isSynthetic())
                     .toArray(Field[]::new);

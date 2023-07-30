@@ -1,9 +1,13 @@
-import java.awt.*;
+package predefined;
+
+import base.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-class TreeBranches extends Drawer {
+public class TreeBranches extends Drawer {
     public TreeBranches() {
         super("X", new LSystem(
                 new char[]{'X', 'F'},

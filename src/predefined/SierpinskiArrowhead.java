@@ -1,6 +1,9 @@
+package predefined;
+
+import base.*;
 import java.awt.Graphics2D;
 
-class SierpinskiArrowhead extends Drawer {
+public class SierpinskiArrowhead extends Drawer {
     public SierpinskiArrowhead() {
         super("A", new LSystem(
             new char[]{'A', 'B'},
