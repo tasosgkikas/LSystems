@@ -1,5 +1,6 @@
 package base;
 
+import predefined.Gosper;
 import predefined.SierpinskiSquare;
 import predefined.TreeBranches;
 
@@ -62,7 +63,7 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        Drawer plotPanel = new SierpinskiSquare();
+        Drawer plotPanel = new Gosper();
         RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame
