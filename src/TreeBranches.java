@@ -7,7 +7,7 @@ class TreeBranches extends Drawer {
     public TreeBranches() {
         super("X", new LSystem(
                 new char[]{'X', 'F'},
-                new String[]{"F+[X]-[X]-X", "FF"}
+                new String[]{"F++[X]-[X]-[X]-[X]-X", "FF"}
         ));
     }
 
