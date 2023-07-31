@@ -4,15 +4,15 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class Drawer extends JPanel {
+public abstract class Drawer extends JPanel implements Runnable {
     private final String AXIOM;
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;
+    private int PREVIOUS_ITERATIONS = -1;
     protected String PRODUCT; // the result of LSYSTEM.produce()
     protected int STEP; // number of pixels per drawn line
     protected double ANGLE; // rotation angle in radians
@@ -24,15 +24,19 @@ public abstract class Drawer extends JPanel {
 
     abstract protected void paintComponent(Graphics2D canvas);
 
-    public void repaint(EnumMap<Parameter, Integer> paramValues) {
-        int iterations = paramValues.get(Parameter.ITERATIONS);
-        if (iterations != ITERATIONS) {
-            PRODUCT = LSYSTEM.produce(AXIOM, iterations);
-            ITERATIONS = iterations;
-        }
-        STEP = paramValues.get(Parameter.STEP);
-        ANGLE = Math.toRadians(paramValues.get(Parameter.ANGLE));
+    public void run() {
+        // TODO move below statements to RunButton somehow
+        initParams();
+        if (ITERATIONS != PREVIOUS_ITERATIONS)
+            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
         repaint();
+    }
+
+    public void initParams() {
+        PREVIOUS_ITERATIONS = ITERATIONS;
+        ITERATIONS = Parameter.ITERATIONS.getValue();
+        STEP = Parameter.STEP.getValue();
+        ANGLE = Math.toRadians(Parameter.ANGLE.getValue());
     }
 
     @Override

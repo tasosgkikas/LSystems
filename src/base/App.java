@@ -3,7 +3,6 @@ package base;
 import predefined.*;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -12,31 +11,12 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class App extends JFrame {
-    private static class RunButton extends JButton {
-        public RunButton(Drawer plotPanel) {
-            super("Run");
-            addActionListener( (ActionEvent e) -> plotPanel.repaint(
-                new EnumMap<>(
-                    Stream.of(Parameter.values())
-                    .collect(Collectors.toMap(
-                        UnaryOperator.identity(),
-                        Parameter::getValue
-                    ))
-                )
-            ));
-        }
-    }
-
     public static void main(String[] args) {
         EventQueue.invokeLater(App::new);
     }
