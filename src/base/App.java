@@ -61,7 +61,7 @@ public class App extends JFrame {
     }
 
     private void buildFrame() {
-        Drawer plotPanel = new Moore();
+        Drawer plotPanel = new FractalPlant();
         RunButton runButton = new RunButton(plotPanel);
 
         // control panel in main frame
