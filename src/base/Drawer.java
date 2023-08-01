@@ -1,6 +1,6 @@
 package base;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class Drawer extends JPanel implements Runnable {
+public abstract class Drawer extends JPanel {
     private final String AXIOM;
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;
@@ -22,22 +22,39 @@ public abstract class Drawer extends JPanel implements Runnable {
         LSYSTEM = lSystem;
     }
 
-    abstract protected void paintComponent(Graphics2D canvas);
-
-    public void run() {
-        // TODO move below statements to RunButton somehow
+    public void runBy(JButton button) {
+        toggleEnableControls(button);
         initParams();
-        if (ITERATIONS != PREVIOUS_ITERATIONS)
-            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
+        produce();
         repaint();
+        toggleEnableControls(button);
     }
 
-    public void initParams() {
+    private void toggleEnableControls(JButton button) {
+        toggleEnabled(button);
+        for (Parameter parameter : Parameter.values()) {
+            toggleEnabled(parameter.slider);
+            toggleEnabled(parameter.valueField);
+        }
+    }
+
+    private void toggleEnabled(JComponent comp) {
+        comp.setEnabled(!comp.isEnabled());
+    }
+
+    private void initParams() {
         PREVIOUS_ITERATIONS = ITERATIONS;
         ITERATIONS = Parameter.ITERATIONS.getValue();
         STEP = Parameter.STEP.getValue();
         ANGLE = Math.toRadians(Parameter.ANGLE.getValue());
     }
+
+    private void produce() {
+        if (ITERATIONS != PREVIOUS_ITERATIONS)
+            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
+    }
+
+    abstract protected void paintComponent(Graphics2D canvas);
 
     @Override
     protected void paintComponent(Graphics g) {
