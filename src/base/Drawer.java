@@ -54,7 +54,7 @@ public abstract class Drawer extends JPanel {
             PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
     }
 
-    abstract protected void paintComponent(Graphics2D canvas);
+    abstract protected void paint(Graphics2D canvas);
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -70,7 +70,7 @@ public abstract class Drawer extends JPanel {
         canvas.translate(0, getHeight());
         canvas.scale(1, -1);
 
-        paintComponent(canvas);
+        paint(canvas);
     }
 
     private String fixPRODUCT(char... forwardChars) {

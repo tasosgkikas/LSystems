@@ -16,7 +16,7 @@ public class TreeBranches extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         canvas.translate(getWidth()/2, 0);
         canvas.setPaint(new Color(70, 100, 0));
         Deque<AffineTransform> transformStack = new ArrayDeque<>();

@@ -12,7 +12,7 @@ public abstract class Koch extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         paintBasic(canvas, 'F');
     }
 
@@ -22,9 +22,9 @@ public abstract class Koch extends Drawer {
         }
 
         @Override
-        protected void paintComponent(Graphics2D canvas) {
+        protected void paint(Graphics2D canvas) {
             canvas.translate(0, 5);
-            super.paintComponent(canvas);
+            super.paint(canvas);
         }
     }
 
@@ -34,9 +34,9 @@ public abstract class Koch extends Drawer {
         }
 
         @Override
-        protected void paintComponent(Graphics2D canvas) {
+        protected void paint(Graphics2D canvas) {
             canvas.translate(getWidth()/3, getHeight()*2/3);
-            super.paintComponent(canvas);
+            super.paint(canvas);
         }
     }
 }

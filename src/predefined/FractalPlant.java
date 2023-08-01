@@ -16,7 +16,7 @@ public class FractalPlant extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         Deque<AffineTransform> transformStack = new ArrayDeque<>();
         canvas.setPaint(new Color(70, 100, 0));
         canvas.rotate(Math.PI/6);

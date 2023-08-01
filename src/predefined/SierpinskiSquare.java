@@ -14,7 +14,7 @@ public class SierpinskiSquare extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         canvas.translate(0, STEP/Math.sqrt(2) + 2);
         canvas.rotate(-ANGLE/2);
         paintBasic(canvas);

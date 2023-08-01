@@ -12,7 +12,7 @@ public class DottedLine extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         canvas.translate(0, getHeight() / 2);
         double step = getWidth() / (Math.pow(3, getITERATIONS()));
         for (char c : PRODUCT.toCharArray()) {

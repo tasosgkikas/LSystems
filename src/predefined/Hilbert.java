@@ -14,7 +14,7 @@ public class Hilbert extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         canvas.translate(2, 2);
         paintBasic(canvas);
     }

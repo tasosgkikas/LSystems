@@ -12,7 +12,7 @@ public class SierpinskiArrowhead extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         if (getITERATIONS() % 2 == 1) ANGLE = -ANGLE;
 
         canvas.translate(0, 5);

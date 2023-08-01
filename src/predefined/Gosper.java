@@ -14,7 +14,7 @@ public class Gosper extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         canvas.translate(getWidth()/4, getHeight()*2/3);
         canvas.rotate(Math.PI - ANGLE);
         paintBasic(canvas, 'A', 'B');

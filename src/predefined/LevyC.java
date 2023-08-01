@@ -12,7 +12,7 @@ public class LevyC extends Drawer {
     }
 
     @Override
-    protected void paintComponent(Graphics2D canvas) {
+    protected void paint(Graphics2D canvas) {
         canvas.translate(getWidth()/4, getHeight()/4);
         paintBasic(canvas);
     }
