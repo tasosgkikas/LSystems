@@ -41,8 +41,8 @@ public abstract class Drawer extends JPanel {
     private void produce() {
         int newIterations = Parameter.ITERATIONS.getValue();
         if (ITERATIONS != newIterations) {
-            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
             ITERATIONS = newIterations;
+            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
         }
         STEP = Parameter.STEP.getValue();
         ANGLE = Math.toRadians(Parameter.ANGLE.getValue());
