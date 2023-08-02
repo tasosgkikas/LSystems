@@ -7,13 +7,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Drawer extends JPanel {
-    private final String AXIOM;
-    private final LSystem LSYSTEM;
-    private int ITERATIONS = -1;
-    private int PREVIOUS_ITERATIONS = -1;
     protected String PRODUCT; // the result of LSYSTEM.produce()
     protected int STEP; // number of pixels per drawn line
     protected double ANGLE; // rotation angle in radians
+    private final String AXIOM;
+    private final LSystem LSYSTEM;
+    private int ITERATIONS = -1;
 
     public Drawer(String axiom, LSystem lSystem) {
         AXIOM = axiom;
@@ -21,14 +20,13 @@ public abstract class Drawer extends JPanel {
     }
 
     public void runBy(JButton button) {
-        toggleEnableControls(button);
-        initParams();
+        toggleEnabledForParametersAnd(button);
         produce();
         repaint();
-        toggleEnableControls(button);
+        toggleEnabledForParametersAnd(button);
     }
 
-    private void toggleEnableControls(JButton button) {
+    private void toggleEnabledForParametersAnd(JButton button) {
         toggleEnabled(button);
         for (Parameter parameter : Parameter.values()) {
             toggleEnabled(parameter.slider);
@@ -40,19 +38,15 @@ public abstract class Drawer extends JPanel {
         comp.setEnabled(!comp.isEnabled());
     }
 
-    private void initParams() {
-        PREVIOUS_ITERATIONS = ITERATIONS;
-        ITERATIONS = Parameter.ITERATIONS.getValue();
+    private void produce() {
+        int newIterations = Parameter.ITERATIONS.getValue();
+        if (ITERATIONS != newIterations) {
+            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
+            ITERATIONS = newIterations;
+        }
         STEP = Parameter.STEP.getValue();
         ANGLE = Math.toRadians(Parameter.ANGLE.getValue());
     }
-
-    private void produce() {
-        if (ITERATIONS != PREVIOUS_ITERATIONS)
-            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
-    }
-
-    abstract protected void paint(Graphics2D canvas);
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -71,19 +65,10 @@ public abstract class Drawer extends JPanel {
         paint(canvas);
     }
 
-    private String fixPRODUCT(char... forwardChars) {
-        Map<Character, Character> substitute = new HashMap<>() {{
-            for (char c : forwardChars) put(c, 'F');
-        }};
-        return PRODUCT.chars()
-                .mapToObj(c -> (char) c)
-                .map(c -> substitute.getOrDefault(c, c))
-                .map(String::valueOf)
-                .collect(Collectors.joining());
-    }
+    abstract protected void paint(Graphics2D canvas);
 
     protected void paintBasic(Graphics2D canvas, char... forwardChars) {
-        for (char c : fixPRODUCT(forwardChars).toCharArray())
+        for (char c : formatPRODUCT(forwardChars).toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
                     canvas.drawLine(0, 0, STEP, 0);
@@ -94,6 +79,17 @@ public abstract class Drawer extends JPanel {
                 case '-' -> // turn right
                     canvas.rotate(-ANGLE);
             }
+    }
+
+    private String formatPRODUCT(char... forwardChars) {
+        Map<Character, Character> substitute = new HashMap<>() {{
+            for (char c : forwardChars) put(c, 'F');
+        }};
+        return PRODUCT.chars()
+                .mapToObj(c -> (char) c)
+                .map(c -> substitute.getOrDefault(c, c))
+                .map(String::valueOf)
+                .collect(Collectors.joining());
     }
 
     protected int getITERATIONS() {
