@@ -1,9 +1,7 @@
 package base;
 
 import javax.swing.*;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,7 +59,7 @@ public abstract class Drawer extends JPanel {
         if (PRODUCT == null) return;
 
         super.paintComponent(g);
-        Graphics2D canvas = (Graphics2D)g;
+        Graphics2D canvas = (Graphics2D) g;
         canvas.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON
@@ -79,7 +77,7 @@ public abstract class Drawer extends JPanel {
         }};
         return PRODUCT.chars()
                 .mapToObj(c -> (char) c)
-                .map(c -> substitute.getOrDefault(c,c))
+                .map(c -> substitute.getOrDefault(c, c))
                 .map(String::valueOf)
                 .collect(Collectors.joining());
     }

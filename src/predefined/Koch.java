@@ -1,7 +1,9 @@
 package predefined;
 
-import base.*;
-import java.awt.Graphics2D;
+import base.Drawer;
+import base.LSystem;
+
+import java.awt.*;
 
 public abstract class Koch extends Drawer {
     protected Koch(String axiom) {

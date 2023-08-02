@@ -1,8 +1,9 @@
 package predefined;
 
-import base.*;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import base.Drawer;
+import base.LSystem;
+
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -10,8 +11,8 @@ import java.util.Deque;
 public class TreeBranches extends Drawer {
     public TreeBranches() {
         super("X", new LSystem(
-                new char[]{'X', 'F'},
-                new String[]{"F+++[X]--[X]--[X]--X", "FF"}
+            new char[]{'X', 'F'},
+            new String[]{"F+++[X]--[X]--[X]--X", "FF"}
         ));
     }
 
@@ -27,13 +28,13 @@ public class TreeBranches extends Drawer {
                     canvas.translate(0, STEP);
                 }
                 case '+' -> // turn left
-                        canvas.rotate(ANGLE);
+                    canvas.rotate(ANGLE);
                 case '-' -> // turn right
-                        canvas.rotate(-ANGLE);
+                    canvas.rotate(-ANGLE);
                 case '[' -> // save
-                        transformStack.push(canvas.getTransform());
+                    transformStack.push(canvas.getTransform());
                 case ']' -> // restore
-                        canvas.setTransform(transformStack.pop());
+                    canvas.setTransform(transformStack.pop());
             }
     }
 }

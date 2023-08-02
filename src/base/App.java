@@ -1,16 +1,9 @@
 package base;
 
-import predefined.*;
+import predefined.FractalPlant;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Frame;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +27,8 @@ public class App extends JFrame {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             if (e.getNewState() == Frame.NORMAL)
                 setSize(
-                    2*screenSize.width/3,
-                    2*screenSize.height/3
+                    screenSize.width * 2/3,
+                    screenSize.height * 2/3
                 );
         });
     }
@@ -71,12 +64,13 @@ public class App extends JFrame {
                     add(new JPanel() {{
                         // vertical layout of the field panel
                         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-                        for (Parameter parameter : Parameter.values()) try {
-                            // field of parameter in field panel
-                            add((Component) field.get(parameter));
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
+                        for (Parameter parameter : Parameter.values())
+                            try {
+                                // field of parameter in field panel
+                                add((Component) field.get(parameter));
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
                     }}, position.get(field)); // field panel in parameters panel
             }}, BorderLayout.CENTER); // parameters panel in control panel
 

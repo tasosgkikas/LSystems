@@ -1,7 +1,9 @@
 package predefined;
 
-import base.*;
-import java.awt.Graphics2D;
+import base.Drawer;
+import base.LSystem;
+
+import java.awt.*;
 
 public class SierpinskiArrowhead extends Drawer {
     public SierpinskiArrowhead() {

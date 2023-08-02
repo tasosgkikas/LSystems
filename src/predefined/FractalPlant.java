@@ -1,8 +1,9 @@
 package predefined;
 
-import base.*;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import base.Drawer;
+import base.LSystem;
+
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.Deque;

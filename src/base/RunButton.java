@@ -6,6 +6,6 @@ import java.awt.event.ActionEvent;
 class RunButton extends JButton {
     RunButton(Drawer plotPanel) {
         super("Run");
-        addActionListener( (ActionEvent e) -> plotPanel.runBy(this));
+        addActionListener((ActionEvent e) -> plotPanel.runBy(this));
     }
 }

@@ -1,8 +1,6 @@
 package base;
 
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 
