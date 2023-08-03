@@ -63,13 +63,20 @@ public abstract class Drawer extends JPanel {
     protected void paintComponent(Graphics g) {
         if (PRODUCT == null) return;
 
-        Graphics2D componentGraphics = (Graphics2D) g;
+        renderComponentGraphics((Graphics2D) g, drawImage());
+    }
+
+    private void renderComponentGraphics(Graphics2D componentGraphics, BufferedImage image) {
         super.paintComponent(componentGraphics);
         componentGraphics.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON
         );
 
+        componentGraphics.drawImage(image, 0, 0, null);
+    }
+
+    private BufferedImage drawImage() {
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D imageGraphics = (Graphics2D) image.getGraphics();
         imageGraphics.setRenderingHint(
@@ -81,7 +88,7 @@ public abstract class Drawer extends JPanel {
         imageGraphics.scale(1, -1);
         paint(imageGraphics);
 
-        componentGraphics.drawImage(image, 0, 0, null);
+        return image;
     }
 
     abstract protected void paint(Graphics2D canvas);
