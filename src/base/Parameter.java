@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 
+// TODO: convert this to an abstract class so that one can create multiple instances of each subclass
 public enum Parameter {
     ITERATIONS("Iterations", 0, 10, 8),
     STEP("Forward step (pixels)", 1, 256, 2),
