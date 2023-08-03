@@ -2,6 +2,7 @@ package base;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ public abstract class Drawer extends JPanel {
     private final String AXIOM;
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;
+    private boolean REPRODUCE; // false if same iterations
 
     public Drawer(String axiom, LSystem lSystem) {
         AXIOM = axiom;
@@ -21,8 +23,11 @@ public abstract class Drawer extends JPanel {
 
     public void runBy(JButton button) {
         toggleEnabledForParametersAnd(button);
-        produce();
-        repaint();
+        initParams();
+        if (REPRODUCE) {
+            produce();
+            repaint();
+        }
         toggleEnabledForParametersAnd(button);
     }
 
@@ -38,31 +43,41 @@ public abstract class Drawer extends JPanel {
         comp.setEnabled(!comp.isEnabled());
     }
 
-    private void produce() {
+    private void initParams() {
         int newIterations = Parameter.ITERATIONS.getValue();
-        if (ITERATIONS != newIterations) {
-            ITERATIONS = newIterations;
-            PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
-        }
+        REPRODUCE = (newIterations != ITERATIONS);
+        ITERATIONS = newIterations;
         STEP = Parameter.STEP.getValue();
         ANGLE = Math.toRadians(Parameter.ANGLE.getValue());
+    }
+
+    private void produce() {
+        PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         if (PRODUCT == null) return;
 
-        super.paintComponent(g);
-        Graphics2D canvas = (Graphics2D) g;
-        canvas.setRenderingHint(
+        Graphics2D componentGraphics = (Graphics2D) g;
+        super.paintComponent(componentGraphics);
+        componentGraphics.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON
         );
 
-        canvas.translate(0, getHeight());
-        canvas.scale(1, -1);
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D imageGraphics = (Graphics2D) image.getGraphics();
+        imageGraphics.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON
+        );
 
-        paint(canvas);
+        imageGraphics.translate(0, getHeight());
+        imageGraphics.scale(1, -1);
+        paint(imageGraphics);
+
+        componentGraphics.drawImage(image, 0, 0, null);
     }
 
     abstract protected void paint(Graphics2D canvas);
