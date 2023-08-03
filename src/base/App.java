@@ -17,20 +17,18 @@ public class App extends JFrame {
     private App() {
         super("L-System");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-        buildFrame();
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addWindowStateListener(e -> {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             if (e.getNewState() == Frame.NORMAL)
                 setSize(
-                    screenSize.width * 2/3,
-                    screenSize.height * 2/3
+                        screenSize.width * 2/3,
+                        screenSize.height * 2/3
                 );
         });
+
+        buildFrame();
     }
 
     private void buildFrame() {
