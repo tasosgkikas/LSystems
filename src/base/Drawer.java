@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public abstract class Drawer extends JPanel {
     protected double ANGLE; // rotation angle in radians
     private final String AXIOM;
     private final LSystem LSYSTEM;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private BufferedImage IMAGE;
     private int ITERATIONS = -1;
     private boolean PRODUCE; // false if same iterations
@@ -27,14 +28,17 @@ public abstract class Drawer extends JPanel {
     }
 
     public void runBy(JButton button) {
-        toggleEnabledForParametersAnd(button);
-        initParams();
-        if (PRODUCE) produce();
-        if (PRODUCE || REPAINT) {
-            drawImage();
-            repaint();
-        }
-        toggleEnabledForParametersAnd(button);
+        CompletableFuture.runAsync(() -> {
+            toggleEnabledForParametersAnd(button);
+            initParams();
+            if (PRODUCE) PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
+        }, EXECUTOR_SERVICE)
+        .thenRunAsync(() -> {
+            if (REPAINT) drawImage();
+        }).thenRunAsync(() -> {
+            if (REPAINT) repaint();
+            toggleEnabledForParametersAnd(button);
+        });
     }
 
     private void toggleEnabledForParametersAnd(JButton button) {
@@ -55,16 +59,29 @@ public abstract class Drawer extends JPanel {
         double newAngle = Math.toRadians(Parameter.ANGLE.getValue());
 
         PRODUCE = (newIterations != ITERATIONS);
-        REPAINT = (newStep != STEP || newAngle != ANGLE);
+        REPAINT = (PRODUCE || newStep != STEP || newAngle != ANGLE);
 
         ITERATIONS = newIterations;
         STEP = newStep;
         ANGLE = newAngle;
     }
 
-    private void produce() {
-        PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
+    private void drawImage() {
+        IMAGE = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D graphics2D = (Graphics2D) IMAGE.getGraphics();
+        graphics2D.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON
+        );
+
+        graphics2D.translate(0, getHeight());
+        graphics2D.scale(1, -1);
+
+        paint(graphics2D);
     }
+
+    abstract protected void paint(Graphics2D canvas);
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -79,22 +96,6 @@ public abstract class Drawer extends JPanel {
 
         graphics2D.drawImage(IMAGE, 0, 0, null);
     }
-
-    private void drawImage() {
-        IMAGE = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D graphics2D = (Graphics2D) IMAGE.getGraphics();
-        graphics2D.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
-        );
-
-        graphics2D.translate(0, getHeight());
-        graphics2D.scale(1, -1);
-        paint(graphics2D);
-    }
-
-    abstract protected void paint(Graphics2D canvas);
 
     protected void paintBasic(Graphics2D canvas, char... forwardChars) {
         for (char c : formatPRODUCT(forwardChars).toCharArray())
