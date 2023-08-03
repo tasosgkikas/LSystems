@@ -14,7 +14,8 @@ public abstract class Drawer extends JPanel {
     private final String AXIOM;
     private final LSystem LSYSTEM;
     private int ITERATIONS = -1;
-    private boolean REPRODUCE; // false if same iterations
+    private boolean PRODUCE; // false if same iterations
+    private boolean REPAINT; // false if same step and angle
 
     public Drawer(String axiom, LSystem lSystem) {
         AXIOM = axiom;
@@ -24,10 +25,8 @@ public abstract class Drawer extends JPanel {
     public void runBy(JButton button) {
         toggleEnabledForParametersAnd(button);
         initParams();
-        if (REPRODUCE) {
-            produce();
-            repaint();
-        }
+        if (PRODUCE) produce();
+        if (PRODUCE || REPAINT) repaint();
         toggleEnabledForParametersAnd(button);
     }
 
@@ -45,10 +44,15 @@ public abstract class Drawer extends JPanel {
 
     private void initParams() {
         int newIterations = Parameter.ITERATIONS.getValue();
-        REPRODUCE = (newIterations != ITERATIONS);
+        int newStep = Parameter.STEP.getValue();
+        double newAngle = Math.toRadians(Parameter.ANGLE.getValue());
+
+        PRODUCE = (newIterations != ITERATIONS);
+        REPAINT = (newStep != STEP || newAngle != ANGLE);
+
         ITERATIONS = newIterations;
-        STEP = Parameter.STEP.getValue();
-        ANGLE = Math.toRadians(Parameter.ANGLE.getValue());
+        STEP = newStep;
+        ANGLE = newAngle;
     }
 
     private void produce() {
