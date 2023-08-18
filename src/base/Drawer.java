@@ -16,11 +16,10 @@ public abstract class Drawer extends JPanel {
     protected double ANGLE; // rotation angle in radians
     private final String AXIOM;
     private final LSystem LSYSTEM;
-    private final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private BufferedImage IMAGE;
     private int ITERATIONS = -1;
-    private boolean PRODUCE; // false if same iterations
-    private boolean REPAINT; // false if same step and angle
+    private boolean PRODUCE; // true if different iterations
+    private boolean REPAINT; // true if different iterations or step or angle
 
     public Drawer(String axiom, LSystem lSystem) {
         AXIOM = axiom;
@@ -28,17 +27,19 @@ public abstract class Drawer extends JPanel {
     }
 
     public void runBy(JButton button) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         CompletableFuture.runAsync(() -> {
             toggleEnabledForParametersAnd(button);
             initParams();
             if (PRODUCE) PRODUCT = LSYSTEM.produce(AXIOM, ITERATIONS);
-        }, EXECUTOR_SERVICE)
+        }, executor)
         .thenRunAsync(() -> {
             if (REPAINT) drawImage();
-        }).thenRunAsync(() -> {
+        }, executor)
+        .thenRunAsync(() -> {
             if (REPAINT) repaint();
             toggleEnabledForParametersAnd(button);
-        });
+        }, executor);
     }
 
     private void toggleEnabledForParametersAnd(JButton button) {
@@ -98,6 +99,7 @@ public abstract class Drawer extends JPanel {
     }
 
     protected void paintBasic(Graphics2D canvas, char... forwardChars) {
+        canvas.setPaint(Color.BLACK);
         for (char c : formatPRODUCT(forwardChars).toCharArray())
             switch (c) {
                 case 'F' -> { // draw forward
